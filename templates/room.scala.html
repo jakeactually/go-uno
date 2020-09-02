@@ -1,0 +1,33 @@
+@(roomId: Int, userId: Int, players: Seq[(Int, String)])(implicit request: RequestHeader)
+
+@main("Room #" + roomId) {
+  <div id="room" class="column-border">
+    <div id="room-id">Room #@roomId</div>
+
+    <p id="invite-text">
+      You can invite others by sharing the link of this page
+    </p>
+
+    <div id="player-names">
+      @for((userId, player) <- players) {
+        <div class="player-name down">
+          @player
+        </div>
+      }
+    </div>
+
+    <a href="@routes.SetupController.start(roomId)" onclick="play(event);">
+      <button class="blue-button down" >
+        Play
+      </button>
+    </a>
+    <form action="@routes.HomeController.expel(roomId, userId)" method="post">
+      <button class="blue-button">
+        Leave
+      </button>
+    </form>
+  </div>
+
+  <input type="hidden" id="webSocketURLH" value="@routes.HomeController.roomState(roomId).webSocketURL">
+  <script src="@routes.Assets.versioned("javascripts/room.js")" type="text/javascript"></script>
+}

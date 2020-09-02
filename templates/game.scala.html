@@ -1,0 +1,29 @@
+@(roomId: Int)(implicit request: RequestHeader)
+
+@main("Room #" + roomId) {
+  <div id="game">
+    <div id="board"></div>
+
+    <button id="action">Stand by</button>
+
+    <div id="all-players"></div>
+
+    <div id="choosen-color">
+      color
+    </div>
+
+    <div id="which-color">
+      <div id="the-red" class="the-color"></div>
+      <div id="the-green" class="the-color"></div>
+      <div id="the-blue" class="the-color"></div>
+      <div id="the-yellow" class="the-color"></div>
+    </div>
+  </div>
+
+  <div id="banner">Invalid</div>
+
+  <input type="hidden" id="roomIdH" value="@roomId">
+  <input type="hidden" id="webSocketURLH" value="@routes.GameController.game(roomId).webSocketURL">
+  <input type="hidden" id="rootH" value="@routes.HomeController.index">
+  <script src="@routes.Assets.versioned("javascripts/game.js")" type="text/javascript"></script>
+}
