@@ -1,4 +1,13 @@
 create_table("rooms") {
-	t.Column("id", "uuid", {primary: true})
+	t.Column("id", "integer", {primary: true})
 	t.Timestamps()
+
+	t.Column("active", "bool", {})
+	t.Column("deck", "int[]", {})
+	t.Column("center", "int[]", {})
+	t.Column("turn", "int", {})
+	t.Column("direction", "bool", {})
+	t.Column("color", "string", {})
+	t.Column("game_state", "string", {null: true})
+	t.Column("chain_count", "int", {})
 }

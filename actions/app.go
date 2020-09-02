@@ -62,6 +62,8 @@ func App() *buffalo.App {
 
 		app.POST("/new-room", NewRoomHandler)
 
+		app.GET("/room/{roomID}", RoomHandler)
+
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 

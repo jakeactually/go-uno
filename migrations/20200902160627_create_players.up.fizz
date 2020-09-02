@@ -1,0 +1,10 @@
+create_table("players") {
+	t.Column("id", "uuid", {primary: true})
+	t.Timestamps()
+
+	t.Column("name", "string", {})
+	t.Column("cards", "int[]", {})
+	t.Column("drawed", "bool", {})
+
+	t.Column("room_id", "integer")
+}
