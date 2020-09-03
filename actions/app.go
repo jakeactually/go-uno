@@ -59,10 +59,9 @@ func App() *buffalo.App {
 		app.Use(translations())
 
 		app.GET("/", HomeHandler)
-
 		app.POST("/new-room", NewRoomHandler)
-
 		app.GET("/room/{roomID}", RoomHandler)
+		app.GET("/room-state/{roomID}", RoomHandler)
 
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
