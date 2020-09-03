@@ -1,4 +1,4 @@
-const play = ev => {
+play.onclick = ev => {
   if (document.querySelectorAll('.player-name').length < 2) {
     alert('Not enough players');
     ev.preventDefault();
@@ -6,7 +6,7 @@ const play = ev => {
 };
 
 const connect = () => {
-    const socket = new WebSocket(
+    /*const socket = new WebSocket(
         webSocketURLH.value.replace('ws', location.protocol == 'https:' ? 'wss' : 'ws')
     );
 
@@ -17,7 +17,7 @@ const connect = () => {
 
     socket.onerror = ev => {
         setTimeout(connect, 1000);
-    };
+    };*/
 };
 
 connect();

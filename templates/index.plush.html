@@ -1,7 +1,13 @@
 <div id="intro" class="center-border">
   <form action="/new-room" method="post">
     <div>
-      <input type="text" id="username" name="username" placeholder="Enter a name" value="@username" required>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Enter a name"
+        value="<%= player.Name %>"
+        required>
     </div>
     <div>
       <button class="blue-button">
