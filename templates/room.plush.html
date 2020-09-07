@@ -18,12 +18,12 @@
       Play
     </button>
   </a>
-  <form action="/expel/<%= room.ID %>/0" method="post">
+  <form action="/expel/<%= room.ID %>/<%= player.ID %>" method="post">
     <button class="blue-button">
       Leave
     </button>
   </form>
 </div>
 
-<input type="hidden" id="webSocketURLH" value="@routes.HomeController.roomState(roomId).webSocketURL">
+<input type="hidden" id="webSocketURLH" value="ws://localhost:3000/room-state/<%= room.ID %>">
 <%= javascriptTag("room.js") %>
