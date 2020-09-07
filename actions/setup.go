@@ -6,6 +6,7 @@ import (
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop"
+	"github.com/gofrs/uuid"
 )
 
 // PlayHandler ...
@@ -45,4 +46,38 @@ func PlayHandler(c buffalo.Context) error {
 	c.Set("room", room)
 
 	return c.Render(http.StatusOK, r.HTML("game.plush.html"))
+}
+
+// CenterHandler ...
+func CenterHandler(c buffalo.Context) error {
+	conn, _ := pop.Connect("development")
+
+	room := &models.Room{}
+	conn.Find(room, c.Param("roomID"))
+
+	return c.Render(http.StatusOK, r.JSON(room.Center))
+}
+
+// HandHandler ...
+func HandHandler(c buffalo.Context) error {
+	conn, _ := pop.Connect("development")
+
+	s := c.Session()
+	pid, _ := s.Get("playerID").(uuid.UUID)
+	player := &models.Player{}
+	conn.Find(player, pid)
+
+	return c.Render(http.StatusOK, r.JSON(player.Cards))
+}
+
+// GameOverHandler ...
+func GameOverHandler(c buffalo.Context) error {
+	conn, _ := pop.Connect("development")
+
+	room := &models.Room{}
+	conn.Find(room, c.Param("roomID"))
+	room.Active = false
+	conn.Update(room)
+
+	return c.Render(http.StatusOK, r.HTML("theEnd.plush.html"))
 }

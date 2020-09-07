@@ -3,7 +3,6 @@ package actions
 import (
 	"fmt"
 	"go_uno/models"
-	"log"
 	"net/http"
 
 	"github.com/gobuffalo/buffalo"
@@ -131,7 +130,6 @@ func ExpelHandler(c buffalo.Context) error {
 	conn.Load(room)
 
 	for _, p := range room.Players {
-		log.Println(p.ID.String(), " ", c.Param("playerID"))
 		if p.ID.String() == c.Param("playerID") {
 			p.RoomID = 0
 			conn.Update(&p)
