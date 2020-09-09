@@ -71,6 +71,14 @@ func App() *buffalo.App {
 		app.GET("/hand", HandHandler)
 		app.GET("/game-over/{roomID}", GameOverHandler)
 
+		app.POST("/turn/{roomID}", TurnHandler)
+		app.GET("/game/{roomID}", GameHandler)
+		app.POST("/draw/{roomID}", DrawHandler)
+		app.GET("/board-state/{roomID}", BoardStateHandler)
+		app.POST("/pass/{roomID}", PassHandler)
+		app.POST("/penalty/{roomID}", PenaltyHandler)
+		app.GET("/all-players/{roomID}", AllPlayersHandler)
+
 		app.ServeFiles("/", assetsBox) // serve files from the public directory
 	}
 

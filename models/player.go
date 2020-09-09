@@ -55,3 +55,8 @@ func (p *Player) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
 func (p *Player) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }
+
+func (player *Player) Draw(room *Room) {
+	card := room.DrawOne()
+	player.Cards = append(player.Cards, card)
+}

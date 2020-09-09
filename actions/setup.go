@@ -27,16 +27,16 @@ func PlayHandler(c buffalo.Context) error {
 		models.Shuffle(cards)
 
 		for _, p := range room.Players {
-			hand, cards = cards[0:6], cards[7:]
+			hand, cards = cards[0:7], cards[7:]
 			p.Cards = hand
 			conn.Update(&p)
 		}
 
 		room.Deck = cards
-		room.Center, room.Deck = append(room.Center, room.Deck[0]), room.Deck[1:]
+		room.ToCenter()
 
-		for models.AllCards[room.Center[len(room.Center)-1]].GetType != models.Number {
-			room.Center, room.Deck = append(room.Center, room.Deck[0]), room.Deck[1:]
+		for models.AllCards[room.Top()].GetType != models.Number {
+			room.ToCenter()
 		}
 
 		room.Active = true
@@ -55,7 +55,12 @@ func CenterHandler(c buffalo.Context) error {
 	room := &models.Room{}
 	conn.Find(room, c.Param("roomID"))
 
-	return c.Render(http.StatusOK, r.JSON(room.Center))
+	var cards []interface{}
+	for _, c := range room.Center {
+		cards = append(cards, []interface{}{c, models.AllCards[c].Image()})
+	}
+
+	return c.Render(http.StatusOK, r.JSON(cards))
 }
 
 // HandHandler ...
@@ -67,7 +72,12 @@ func HandHandler(c buffalo.Context) error {
 	player := &models.Player{}
 	conn.Find(player, pid)
 
-	return c.Render(http.StatusOK, r.JSON(player.Cards))
+	var cards []interface{}
+	for _, c := range player.Cards {
+		cards = append(cards, []interface{}{c, models.AllCards[c].Image()})
+	}
+
+	return c.Render(http.StatusOK, r.JSON(cards))
 }
 
 // GameOverHandler ...

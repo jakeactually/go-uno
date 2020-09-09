@@ -1,6 +1,11 @@
 package models
 
-import "math/rand"
+import (
+	"fmt"
+	"math/rand"
+
+	"github.com/gobuffalo/pop/nulls"
+)
 
 type CardColor string
 
@@ -11,18 +16,18 @@ const (
 	Yellow           = "yellow"
 )
 
-type CardType int
+type CardType string
 
 const (
-	Number      CardType = 0
-	Stop                 = 1
-	Reverse              = 2
-	Plus2                = 3
-	ChangeColor          = 4
-	Plus4                = 5
+	Number      CardType = "number"
+	Stop                 = "stop"
+	Reverse              = "reverse"
+	Plus2                = "plus2"
+	ChangeColor          = "color"
+	Plus4                = "plus4"
 )
 
-type Card = struct {
+type Card struct {
 	GetNumber int
 	GetColor  CardColor
 	GetType   CardType
@@ -49,9 +54,11 @@ func MakeAllCards() []Card {
 		// There are 4 zeroes
 		cards = append(cards, Card{GetColor: c, GetType: Number})
 
-		cards = append(cards, Card{GetColor: c, GetType: Stop})
-		cards = append(cards, Card{GetColor: c, GetType: Reverse})
-		cards = append(cards, Card{GetColor: c, GetType: Plus2})
+		for range [2]int{} {
+			cards = append(cards, Card{GetColor: c, GetType: Stop})
+			cards = append(cards, Card{GetColor: c, GetType: Reverse})
+			cards = append(cards, Card{GetColor: c, GetType: Plus2})
+		}
 	}
 
 	for range [4]int{} {
@@ -84,4 +91,66 @@ func Shuffle(deck []int) {
 		deck[a] = deck[b]
 		deck[b] = temp
 	}
+}
+
+func (c1 Card) Matches(gameState nulls.String, chosenColor CardColor, c2 Card) (bool, string) {
+	if gameState.Valid {
+		if gameState.String == "stop" {
+			return c2.GetType == Stop, "You can only chain or pass"
+		} else if gameState.String == "plus2" {
+			return c2.GetType == Plus2, "You can only chain or draw"
+		} else if gameState.String == "plus4" {
+			return c2.GetType == Plus4, "You can only chain or draw"
+		}
+	}
+
+	return c1.FreeMatch(chosenColor, c2)
+}
+
+func (c1 Card) FreeMatch(chosenColor CardColor, c2 Card) (bool, string) {
+	if c1.GetType == Number {
+		if c2.GetType == Number {
+			return c1.GetNumber == c2.GetNumber || c1.GetColor == c2.GetColor, "Invalid Move"
+		} else if c2.IsSign() {
+			return c1.GetColor == c2.GetColor, "Wrong color"
+		}
+
+		return true, ""
+	} else if c1.IsSign() {
+		if c2.GetType == Number {
+			return c1.GetColor == c2.GetColor, "Wrong color"
+		} else if c2.IsSign() {
+			return c1.GetType == c2.GetType || c1.GetColor == c2.GetColor, "Invalid Move"
+		}
+
+		return true, ""
+	}
+
+	if c2.GetType == Number || c2.IsSign() {
+		return chosenColor == c2.GetColor, "Choosen color is " + string(chosenColor)
+	}
+
+	return true, ""
+}
+
+func (c Card) IsSign() bool {
+	return c.GetType == Stop || c.GetType == Reverse || c.GetType == Plus2
+}
+
+func (c Card) CanChain() bool {
+	return c.GetType == Stop || c.GetType == Plus2 || c.GetType == Plus4
+}
+
+func (c Card) IsColorCard() bool {
+	return c.GetType == ChangeColor || c.GetType == Plus4
+}
+
+func (c Card) Image() string {
+	if c.GetType == Number {
+		return fmt.Sprintf("%c%d", c.GetColor[0], c.GetNumber)
+	} else if c.IsSign() {
+		return fmt.Sprintf("%c-%s", c.GetColor[0], c.GetType)
+	}
+
+	return string(c.GetType)
 }

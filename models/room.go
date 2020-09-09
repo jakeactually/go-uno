@@ -25,7 +25,7 @@ type Room struct {
 	GameState  nulls.String `json:"gameState" db:"game_state"`
 	ChainCount int          `json:"chainCount" db:"chain_count"`
 
-	Players []Player `json:"players" has_many:"players"`
+	Players []Player `json:"players" has_many:"players" order_by:"ID"`
 }
 
 // String is not required by pop and may be deleted
@@ -59,4 +59,48 @@ func (r *Room) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
 // This method is not required and may be deleted.
 func (r *Room) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
+}
+
+func (room *Room) ToCenter() {
+	room.Center, room.Deck = append(room.Center, room.Deck[0]), room.Deck[1:]
+}
+
+func (room *Room) DrawOne() int {
+	result := room.Deck[0]
+	room.Deck = room.Deck[1:]
+	return result
+}
+
+func (room Room) Top() int {
+	return room.Center[len(room.Center)-1]
+}
+
+func (room *Room) Left() {
+	if room.Turn == 0 {
+		room.Turn = len(room.Players) - 1
+	} else {
+		room.Turn--
+	}
+}
+
+func (room *Room) Right() {
+	if room.Turn == len(room.Players)-1 {
+		room.Turn = 0
+	} else {
+		room.Turn++
+	}
+}
+
+func (room *Room) Next() {
+	if room.Direction {
+		room.Right()
+	} else {
+		room.Left()
+	}
+
+	player := room.Players[room.Turn]
+
+	if len(player.Cards) == 0 {
+		room.Next()
+	}
 }

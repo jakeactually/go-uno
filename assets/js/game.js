@@ -248,6 +248,10 @@ const connect = () => {
     const socket = new WebSocket(
         webSocketURLH.value.replace('ws', location.protocol == 'https:' ? 'wss' : 'ws')
     );
+    
+    socket.onopen = () => {
+        console.log('open');
+    };
 
     socket.onmessage = async ev => {
         console.log(ev);
