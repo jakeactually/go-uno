@@ -66,6 +66,11 @@ func (room *Room) ToCenter() {
 }
 
 func (room *Room) DrawOne() int {
+	if len(room.Deck) < 2 {
+		room.Deck = append(room.Center, room.Deck...)
+		Shuffle(room.Deck)
+	}
+
 	result := room.Deck[0]
 	room.Deck = room.Deck[1:]
 	return result
