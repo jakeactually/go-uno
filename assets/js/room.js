@@ -6,9 +6,8 @@ play.onclick = ev => {
 };
 
 const connect = () => {
-    const socket = new WebSocket(
-        webSocketURLH.value.replace('ws', location.protocol == 'https:' ? 'wss' : 'ws')
-    );
+    const url = location.origin.replace('http', 'ws') + webSocketURLH.value;
+    const socket = new WebSocket(url);
 
     socket.onmessage = ev => {
         console.log(ev);

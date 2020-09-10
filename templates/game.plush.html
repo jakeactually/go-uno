@@ -20,6 +20,5 @@
 <div id="banner">Invalid</div>
 
 <input type="hidden" id="roomIdH" value="<%= room.ID %>">
-<input type="hidden" id="webSocketURLH" value="ws://localhost:3000/game/<%= room.ID %>">
-<input type="hidden" id="rootH" value="http://localhost:3000">
+<input type="hidden" id="webSocketURLH" value="<%= gamePath({roomID: room.ID}) %>">
 <%= javascriptTag("game.js") %>

@@ -2,7 +2,7 @@
   <div id="game-over-wrap">
     <h1 id="game-over">Game over</h1>
     <div>
-      <a href="/play/<%= room.ID %>">
+      <a href="<%= playPath({roomID: room.ID}) %>">
         <button class="blue-button">
           Play again
         </button>

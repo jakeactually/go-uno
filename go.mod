@@ -18,6 +18,7 @@ require (
 	github.com/gobuffalo/validate/v3 v3.1.0
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gorilla/websocket v1.4.0
+	github.com/markbates/grift v1.5.0
 	github.com/pkg/errors v0.9.1
 	github.com/unrolled/secure v0.0.0-20190103195806-76e6d4e9b90c
 )

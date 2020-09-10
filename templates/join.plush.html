@@ -1,11 +1,11 @@
 <div class="center-border">
-  <form action="/join-room/<%= roomId %>" method="post">
+  <form action="<%= joinRoomPath({roomID: roomID}) %>" method="post">
     <div>
       <input type="text" id="username" name="username" placeholder="Enter a name" value="<%= player.Name %>" required>
     </div>
     <div>
       <button class="blue-button">
-        Join room #<%= roomId %>
+        Join room #<%= roomID%>
       </button>
     </div>
   </form>

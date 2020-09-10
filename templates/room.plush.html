@@ -13,17 +13,17 @@
     <% } %>
   </div>
 
-  <a id="play" href="/play/<%= room.ID %>">
+  <a id="play" href="<%= playPath({roomID: room.ID}) %>">
     <button class="blue-button down" >
       Play
     </button>
   </a>
-  <form action="/expel/<%= room.ID %>/<%= player.ID %>" method="post">
+  <form action="<%= expelPath({roomID: room.ID, playerID: player.ID}) %>" method="post">
     <button class="blue-button">
       Leave
     </button>
   </form>
 </div>
 
-<input type="hidden" id="webSocketURLH" value="ws://localhost:3000/room-state/<%= room.ID %>">
+<input type="hidden" id="webSocketURLH" value="<%= roomStatePath({roomID: room.ID}) %>">
 <%= javascriptTag("room.js") %>

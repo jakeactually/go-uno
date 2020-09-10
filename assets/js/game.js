@@ -1,6 +1,4 @@
-const root = rootH.value;
 const roomId = roomIdH.value;
-const webSocketURL = webSocketURLH.value;
 
 let hand = [];
 let center = [];
@@ -17,21 +15,21 @@ const fullFetch = async () => {
 
 const fetchHand = async () => {
   hand = [];
-  const newHand = await fetchW(root + '/hand').then(r => r.json());
+  const newHand = await fetchW('/hand').then(r => r.json());
   for (const card of newHand) addCard(card);
   renderPos();
 };
 
 const fetchCenter = async () => {
   center = [];
-  const newCenter  = await fetchW(root + '/center/' + roomId).then(r => r.json());
+  const newCenter  = await fetchW('/center/' + roomId).then(r => r.json());
   for (const card of newCenter) toCenter(makeCard(card));
   const [cardId, cardName] = newCenter.pop();
   await fetchBoard(cardName.match(/plus4|color/));
 };
 
 const handUpdate = async () => {
-  const newHand  = await fetchW(root + '/hand').then(r => r.json());
+  const newHand  = await fetchW('/hand').then(r => r.json());
 
   if (hand.length < newHand.length) {
       const diff = newHand.slice(hand.length);
@@ -44,7 +42,7 @@ const handUpdate = async () => {
 };
 
 const centerUpdate = async () => {
-  const newCenter  = await fetchW(root + '/center/' + roomId).then(r => r.json());
+  const newCenter  = await fetchW('/center/' + roomId).then(r => r.json());
 
   if (newCenter.length < center.length) {
     await fullFetch();
@@ -65,17 +63,17 @@ const centerUpdate = async () => {
 };
 
 const fetchPlayers = async () => {
-  const data  = await fetchW(root + '/all-players/' + roomId).then(r => r.json());
+  const data  = await fetchW('/all-players/' + roomId).then(r => r.json());
 
   if (data.filter(([name, score]) => score != 0).length <= 1)
-    location.href = root + '/game-over/' + roomId;
+    location.href = '/game-over/' + roomId;
 
   window['all-players'].innerHTML = '';
   data.forEach(makePlayer);
 };
 
 const fetchBoard = async topIsColorCard => {
-  const board  = await fetchW(root + '/board-state/' + roomId).then(r => r.json());
+  const board  = await fetchW('/board-state/' + roomId).then(r => r.json());
   const [myTurn, drawed, color, state, count] = board;
 
   if (topIsColorCard) {
@@ -90,27 +88,27 @@ const fetchBoard = async topIsColorCard => {
   if (state == "plus2") {
     action.innerText = 'Draw ' + count * 2;
     action.onclick = async () => {
-        await fetchW(root + '/penalty/' + roomId, { method: 'post' });
+        await fetchW('/penalty/' + roomId, { method: 'post' });
     };
   } else if (state == "plus4") {
     action.innerText = 'Draw ' + count * 4;
     action.onclick = async () => {
-        await fetchW(root + '/penalty/' + roomId, { method: 'post' });
+        await fetchW('/penalty/' + roomId, { method: 'post' });
     };
   } else if (state == "stop") {
     action.innerText = 'Pass';
     action.onclick = async () => {
-        await fetchW(root + '/penalty/' + roomId, { method: 'post' });
+        await fetchW('/penalty/' + roomId, { method: 'post' });
     };
   } else if (drawed) {
     action.innerText = 'Pass';
     action.onclick = async () => {
-        await fetchW(root + '/pass/' + roomId, { method: 'post' });
+        await fetchW('/pass/' + roomId, { method: 'post' });
     };
   } else {
     action.innerText = 'Draw';
     action.onclick = async () => {
-        await fetchW(root + '/draw/' + roomId, { method: 'post' });
+        await fetchW('/draw/' + roomId, { method: 'post' });
         await handUpdate();
     };
   }
@@ -121,7 +119,7 @@ const getHalf = () => Math.floor(hand.length / 2);
 
 const makeCard = ([id, name]) => {
   const img = document.createElement('img');
-  img.src = `${root}/assets/images/${name}.png`;
+  img.src = `/assets/images/${name}.png`;
   img.className = 'card';
   img.ondragstart = ev => ev.preventDefault();
   img.cardId = id;
@@ -207,7 +205,7 @@ handH2.on('swipeup', async () => {
   }
 
   const options = { method: 'post', body: body };
-  const res = await fetchW(root + '/turn/' + roomId, options);
+  const res = await fetchW('/turn/' + roomId, options);
 
   if (res.ok) {
     toCenter(card);
@@ -245,9 +243,8 @@ const message = async text => {
 };
 
 const connect = () => {
-    const socket = new WebSocket(
-        webSocketURLH.value.replace('ws', location.protocol == 'https:' ? 'wss' : 'ws')
-    );
+    const url = location.origin.replace('http', 'ws') + webSocketURLH.value;
+    const socket = new WebSocket(url);
     
     socket.onopen = () => {
         console.log('open');

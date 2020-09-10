@@ -95,7 +95,7 @@ func JoinRoomHandler(c buffalo.Context) error {
 		conn.Find(player, pid)
 	}
 
-	c.Set("roomId", c.Param("roomID"))
+	c.Set("roomID", c.Param("roomID"))
 	c.Set("player", player)
 
 	return c.Render(http.StatusOK, r.HTML("join.plush.html"))
