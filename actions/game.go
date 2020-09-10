@@ -42,14 +42,7 @@ func TurnHandler(c buffalo.Context) error {
 	if ok {
 		effects(c, room, card2)
 
-		var hand []int
-		for _, c := range player.Cards {
-			if c != cardID {
-				hand = append(hand, c)
-			}
-		}
-
-		player.Cards = hand
+		player.Cards = intFilter(player.Cards, cardID)
 		room.Center = append(room.Center, cardID)
 
 		room.Next()
@@ -204,10 +197,30 @@ func AllPlayersHandler(c buffalo.Context) error {
 	var obj []interface{}
 
 	for i, p := range room.Players {
-		obj = append(obj, []interface{}{twoLetters(p.Name), len(p.Cards), room.Turn == i})
+		obj = append(obj, []interface{}{twoLetters(p.Name), len(noZeroes(p.Cards)), room.Turn == i})
 	}
 
 	return c.Render(http.StatusOK, r.JSON(obj))
+}
+
+// hack
+// buffalo pop loads postgres empty int arrays as slices with a single zero
+func noZeroes(arr []int) []int {
+	return intFilter(arr, 0)
+}
+
+func intFilter(arr []int, n int) []int {
+	out := []int{}
+
+	for _, x := range arr {
+		if x == n {
+			continue
+		}
+
+		out = append(out, x)
+	}
+
+	return out
 }
 
 func twoLetters(fullName string) string {

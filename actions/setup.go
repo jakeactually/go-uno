@@ -33,6 +33,9 @@ func PlayHandler(c buffalo.Context) error {
 		}
 
 		room.Deck = cards
+		// hack
+		// buffalo pop loads postgres empty int arrays as slices with a single zero
+		room.Center = []int{}
 		room.ToCenter()
 
 		for models.AllCards[room.Top()].GetType != models.Number {
@@ -55,7 +58,7 @@ func CenterHandler(c buffalo.Context) error {
 	room := &models.Room{}
 	conn.Find(room, c.Param("roomID"))
 
-	var cards []interface{}
+	cards := []interface{}{}
 	for _, c := range room.Center {
 		cards = append(cards, []interface{}{c, models.AllCards[c].Image()})
 	}
@@ -72,8 +75,8 @@ func HandHandler(c buffalo.Context) error {
 	player := &models.Player{}
 	conn.Find(player, pid)
 
-	var cards []interface{}
-	for _, c := range player.Cards {
+	cards := []interface{}{}
+	for _, c := range noZeroes(player.Cards) {
 		cards = append(cards, []interface{}{c, models.AllCards[c].Image()})
 	}
 
@@ -88,6 +91,8 @@ func GameOverHandler(c buffalo.Context) error {
 	conn.Find(room, c.Param("roomID"))
 	room.Active = false
 	conn.Update(room)
+
+	c.Set("room", room)
 
 	return c.Render(http.StatusOK, r.HTML("theEnd.plush.html"))
 }

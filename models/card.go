@@ -38,6 +38,10 @@ var Colors = []CardColor{Red, Green, Blue, Yellow}
 func MakeAllCards() []Card {
 	var cards []Card
 
+	// dummy
+	// position zero is not used
+	cards = append(cards, Card{})
+
 	for n := range [9]int{} {
 		for _, c := range Colors {
 			for range [2]int{} {
@@ -76,7 +80,7 @@ func Deck() []int {
 	var deck []int
 
 	for i := range [108]int{} {
-		deck = append(deck, i)
+		deck = append(deck, i+1)
 	}
 
 	return deck
