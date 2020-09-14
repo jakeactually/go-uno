@@ -32,7 +32,11 @@ func HomeHandler(c buffalo.Context) error {
 
 // NewRoomHandler ...
 func NewRoomHandler(c buffalo.Context) error {
-	conn, _ := pop.Connect("development")
+	conn, err := pop.Connect("development")
+
+	if err != nil {
+		return err
+	}
 
 	room := &models.Room{}
 	conn.Create(room)
